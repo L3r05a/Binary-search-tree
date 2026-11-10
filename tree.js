@@ -5,7 +5,7 @@ export class Tree {
   constructor(array) {
     this.root = this.buildTree(array);
   }
-
+  //Methods
   buildTree(array) {
     //remove duplicates, sorts ascending
     const uniqueSorted = [...new Set(array)].sort((a, b) => a - b);
@@ -36,10 +36,8 @@ export class Tree {
 
     return sortedArraytoBST(uniqueSorted);
   }
-
+  //returns boolean for value existence
   includes(value) {
-    //returns boolean for value existence
-
     //helper recursive function
     function recSearch(node, value) {
       if (node === null) {
@@ -59,7 +57,7 @@ export class Tree {
     //helper call
     return recSearch(this.root, value);
   }
-
+  //Inserts new node with (value)
   insert(value) {
     //insert node
 
@@ -85,7 +83,7 @@ export class Tree {
     //stores call result
     this.root = recSearch(this.root, value);
   }
-
+  //Removes node from tree by (value)
   deleteItem(value) {
     //helper successor finder
     function getSuccessor(current) {
@@ -122,4 +120,103 @@ export class Tree {
     }
     this.root = delNode(this.root, value);
   }
+  //executes callback to each value in the tree nodes
+  levelOrderForEach(callback) {
+    //no callback parameter error
+    if (typeof callback !== "function")
+      throw new Error("A callback function is required");
+
+    //empty root
+    if (this.root === null) return;
+
+    //seed queue
+    const queue = [this.root];
+
+    //while queue not empty
+    while (queue.length !== 0) {
+      //current replaced by next queue node and cleared from queue
+      const current = queue.shift();
+
+      //callback with current.data per pass
+      callback(current.data);
+      //block null children and push to queue
+      if (current.left !== null) queue.push(current.left);
+      if (current.right !== null) queue.push(current.right);
+    }
+  }
+  //Recursive version passing the queue
+  levelOrderForEachRec1(callback) {
+    //no callback parameter error
+    if (typeof callback !== "function")
+      throw new Error("A callback function is required");
+    //empty root
+    if (this.root === null) return;
+    const queue = [this.root];
+    //helper
+    function rec(q) {
+      //base case
+      if (q.length === 0) return;
+      const current = q.shift();
+      callback(current.data);
+      if (current.left !== null) q.push(current.left);
+      if (current.right !== null) q.push(current.right);
+      rec(q);
+    }
+    rec(queue);
+  }
+
+  //recursive version using height
+  levelOrderForEachRec2(callback) {
+    //no callback parameter error
+    if (typeof callback !== "function")
+      throw new Error("A callback function is required");
+    //empty root
+    if (this.root === null) return;
+
+    //height function (nodes)
+    function height(node) {
+      //base case is height of no node
+      if (node === null) return 0;
+      //add 1 to the tallest subtree
+      return 1 + Math.max(height(node.left), height(node.right));
+    }
+
+    function visitLevel(node, level) {
+      //a recursive function that visits every level
+      if (node === null) return;
+      if (level === 0) {
+        //callback every node
+        callback(node.data);
+        return;
+      }
+      visitLevel(node.left, level - 1);
+      visitLevel(node.right, level - 1);
+    }
+
+    const levels = height(this.root);
+    for (let level = 0; level < levels; level++) {
+      visitLevel(this.root, level);
+    }
+  }
+
+  inOrderForEach(callback) {
+    // inorder(left,root,right)
+    //no callback parameter error
+    if (typeof callback !== "function")
+      throw new Error("A callback function is required");
+
+    //empty root
+    if (this.root === null) return;
+
+    function traverse(node) {
+      if (node === null) return;
+      visitLevel(node.left);
+      callback(node.data);
+      visitLevel(node.right);
+    }
+    traverse(this.root);
+  }
+
+  //preorder (root,left,right)
+  //postorder(left, right,root)
 }

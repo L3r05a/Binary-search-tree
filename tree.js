@@ -199,24 +199,56 @@ export class Tree {
     }
   }
 
+  // inorder(left,root,right)
   inOrderForEach(callback) {
-    // inorder(left,root,right)
+    this.#traverse(callback, "in");
+  }
+  //preorder (root,left,right)
+  preOrderForEach(callback) {
+    this.#traverse(callback, "pre");
+  }
+
+  //postorder(left, right,root)
+  postOrderForEach(callback) {
+    this.#traverse(callback, "post");
+  }
+
+  #traverse(callback, order) {
     //no callback parameter error
     if (typeof callback !== "function")
       throw new Error("A callback function is required");
 
-    //empty root
-    if (this.root === null) return;
-
-    function traverse(node) {
+    function visit(node) {
       if (node === null) return;
-      visitLevel(node.left);
-      callback(node.data);
-      visitLevel(node.right);
+      if (order === "pre") callback(node.data);
+      visit(node.left);
+      if (order === "in") callback(node.data);
+      visit(node.right);
+      if (order === "post") callback(node.data);
     }
-    traverse(this.root);
+    visit(this.root);
   }
+  // number of edges from value to furthest leaf
+  height(value) {
+    function findNode(node, value) {
+      if (node === null) return undefined;
 
-  //preorder (root,left,right)
-  //postorder(left, right,root)
+      if (node.data === value) {
+        return node;
+      }
+      if (node.data > value) {
+        return findNode(node.left, value);
+      }
+      return findNode(node.right, value);
+    }
+    const target = findNode(this.root, value);
+
+    function measure(node) {
+      //to return 0 a leaf has to be +1 -1
+      if (node === null) return -1;
+      return 1 + Math.max(measure(node.left), measure(node.right));
+    }
+    if (target === undefined) return undefined;
+    return measure(target);
+  }
 }

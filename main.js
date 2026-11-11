@@ -14,7 +14,7 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 // const test = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 // const test = new Tree([]);
-const test = new Tree([1, 2, 3]);
+const test = new Tree([1, 2, 3, 4, 5, 6, 7]);
 // test.insert(1);
 // test.insert(9);
 // test.insert(12);
@@ -29,14 +29,14 @@ const test = new Tree([1, 2, 3]);
 prettyPrint(test.root);
 console.log(test.root);
 
-const collected = [];
+// const collected = [];
 
-test.inOrderForEach((value) => {
-  collected.push(value);
-});
+// test.postOrderForEach((value) => {
+//   collected.push(value);
+// });
 
 // test.levelOrderForEachRec((value) => {
 //   collected.push(value);
 // });
 
-console.log(collected);
+console.log(test.height(17));
